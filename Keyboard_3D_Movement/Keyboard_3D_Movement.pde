@@ -8,7 +8,6 @@ import java.awt.MouseInfo;
 
 float angle;
 PImage world;
-//int num;
 
 PShape teapot0; /* legacy teapot */
 float[] xyzsAR;
@@ -31,6 +30,7 @@ int[] trianglesIndexs;
 boolean showThickAxies=false;
 boolean showTeapot=true;
 boolean showHello=true;
+boolean showCrossHairs=true;
 
 /* Wanted to have focus go to main window after making a selection in the gui window.
  * per https://discourse.processing.org/t/is-it-possible-to-open-a-second-window-in-processing-3-4-using-g4p/5888/7
@@ -46,7 +46,7 @@ Point mainWindowXY=new Point(600,550); /* use variable for the surface X,Y so th
 Logger log = Logger.getLogger("Master"); 
 
 void setup() {
-  size(640,480, P3D);
+  size(640,480, P3D);  
   /* set to wherever is a convenient viewing location on your system. Numbers are X,Y pixel offsets from UL screen corner */
   surface.setLocation((int)mainWindowXY.getX(),(int)mainWindowXY.getY()); 
   initLog4j();
@@ -70,7 +70,7 @@ void setup() {
   //getJsonTeapot();
   //teapot0=createTeapot0();
   
-  getMinimalistJsonTeapot();
+  getReducedDataCountJsonTeapot();
   teapot1=createTeapot1();
   
   PGL pgl = null;
@@ -89,8 +89,9 @@ void draw() {
   ck.drawMethods();
   scale(1.,1.,-1.); /* set Y axis conformal to USA Math, USA Physics, and OpenGL:  X Pos to the right , Y Pos Away, Z Pos is up */
   background(0.5); /* different from full white, so that if anything is ever inadvertantly drawn white, it will still be visible */
+  background(1.0);
   lights();
-  ck.drawCrossHairs();
+  if(showCrossHairs)ck.drawCrossHairs();
    
   label1.setText(String.format(
     "XYZ (%9.3f,%9.3f,%9.3f)   Pitch,Roll,Yaw (%8.3f,%8.3f,%8.3f)  %4.0f distance/sec  %6.2f°/sec",
@@ -124,6 +125,7 @@ void draw() {
   }  
   if(showHello)sayHello();   
   angle += 0.01;
+  //angle=ck.thetaMod();
 }
 
 

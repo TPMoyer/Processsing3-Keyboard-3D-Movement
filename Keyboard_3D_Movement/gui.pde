@@ -84,6 +84,12 @@ public void checkbox3_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkb
   focusOnMainWindow();
 } //_CODE_:checkbox3:789607:
 
+public void checkbox4_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox4:788481:
+  //println("checkbox4 - GCheckbox >> GEvent." + event + " @ " + millis());
+  showCrossHairs=(event.toString()=="SELECTED");
+  focusOnMainWindow();
+} //_CODE_:checkbox4:788481:
+
 
 
 // Create all the GUI controls. 
@@ -160,6 +166,12 @@ public void createGUI(){
   checkbox3.setOpaque(false);
   checkbox3.addEventHandler(this, "checkbox3_clicked1");
   checkbox3.setSelected(true);
+  checkbox4 = new GCheckbox(window1, 161, 171, 120, 20);
+  checkbox4.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
+  checkbox4.setText("Show CrossHairs");
+  checkbox4.setOpaque(false);
+  checkbox4.addEventHandler(this, "checkbox4_clicked1");
+  checkbox4.setSelected(true);
   window1.loop();
 }
 
@@ -178,3 +190,4 @@ GLabel label2;
 GCheckbox checkbox1; 
 GCheckbox checkbox2; 
 GCheckbox checkbox3; 
+GCheckbox checkbox4; 

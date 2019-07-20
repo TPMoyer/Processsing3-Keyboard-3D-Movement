@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 void doTranslatedClosedCrossSections(
   JSONObject stuff,
-  JSONObject parameters,
   ArrayList<PVector> axyzs,
   ArrayList<Integer> aTriangleIndices,
   ArrayList<PVector> aTexCoords,
@@ -13,8 +12,8 @@ void doTranslatedClosedCrossSections(
 ){
   int baseVertNum=axyzs.size();
   log.debug(name+" is TranslatedClosedInvariantCrossSection incomming axyzs.size="+axyzs.size());
-  JSONArray isAndAts=parameters.getJSONArray("cross section isAndAts");
-  //log.debug("isAndAts has size "+isAndAts.size());
+  JSONArray crossSections=stuff.getJSONArray("cross sections");
+  //log.debug("crossSections has size "+crossSections.size());
   ArrayList<PVector> partInXZThetas     = new ArrayList<PVector>();
   ArrayList<ArrayList<PVector>> partInSetXYZs     = new ArrayList<ArrayList<PVector>>();
   boolean textureReverse=false;
@@ -24,15 +23,14 @@ void doTranslatedClosedCrossSections(
     //log.debug("this part did not say if textureReverse. retaining default false ");
   }
   int numAroundCrossSection=-1;
-  for(int mm=0;mm<isAndAts.size();mm++){ 
-    //log.debug("                                                 isAndAts "+mm);
-    JSONObject isAndAt=(JSONObject)isAndAts.get(mm);
-    JSONObject is=isAndAt.getJSONObject("cross section is");
-    String specifiers = is.getString("co-ordinate specifiers");
-    JSONArray coords=is.getJSONArray("co-ordinates");
+  for(int mm=0;mm<crossSections.size();mm++){ 
+    //log.debug("                                                 crossSections "+mm);
+    JSONObject crossSection=(JSONObject)crossSections.get(mm);
+    String isCoordinateType=stuff.getString("cross section is co-ordinate type");
+    JSONArray coords=crossSection.getJSONArray("cross section is co-ordinates");
     ArrayList<PVector> partPureInXYZs = new ArrayList<PVector>();
-    ArrayList<PVector> partInXYZs     = new ArrayList<PVector>();    
-    if("y,z".equals(specifiers)){
+    ArrayList<PVector> partInXYZs     = new ArrayList<PVector>();
+    if("y,z".equals(isCoordinateType)){
       for(int jj=0;jj<coords.size();jj+=2){
         partPureInXYZs.add(new PVector(0.0f,((Double)coords.get(jj)).floatValue(),((Double)coords.get(jj+1)).floatValue()));
         //log.debug(String.format("pure    (%8.3f,%8.3f,%8.3f)",
@@ -42,12 +40,12 @@ void doTranslatedClosedCrossSections(
         //)); 
       }
     } else {
-      String msg="unprogrammed is specifier: "+specifiers+" this is fatal";
+      String msg="unprogrammed is specifier 0:"+isCoordinateType+" this is fatal";
       println(msg);
       log.fatal(msg);
       System.exit(3);
     }
-    String symmetryOps = is.getString("symmetry operations");
+    String symmetryOps = stuff.getString("symmetry operations on cross section co-ordinates");
     //log.debug("partInXYZs.size()="+coords.size()/2);
     if("mirrored on y=0 and z=0 planes".equals(symmetryOps)){
       /* This section commits the sin of assuming the co-ordinates are ordered from X=0 to always greater X values.
@@ -92,12 +90,11 @@ void doTranslatedClosedCrossSections(
     }
     numAroundCrossSection=partInXYZs.size();  /* they must all be the same in order for this triangle setting to work, so just grab this metric from the last one */
     //log.debug("");
-    JSONObject at=isAndAt.getJSONObject("cross section(s) at");
-    specifiers = at.getString("co-ordinate specifiers");
-    coords=at.getJSONArray("co-ordinates");    
-    if("x,z, radians within xz plane".equals(specifiers)){
-      for(int jj=0;jj<coords.size();jj+=3){
-        partInXZThetas.add(new PVector(((Double)coords.get(jj)).floatValue(),((Double)coords.get(jj+1)).floatValue(),((Double)coords.get(jj+2)).floatValue()));
+    String atCoordinateType=stuff.getString("cross section at co-ordinate type");
+    JSONArray atCoords=crossSection.getJSONArray("cross section(s) at co-ordinates");
+    if("x,z,radians_within_xz_plane".equals(atCoordinateType)){
+      for(int jj=0;jj<atCoords.size();jj+=3){
+        partInXZThetas.add(new PVector(((Double)atCoords.get(jj)).floatValue(),((Double)atCoords.get(jj+1)).floatValue(),((Double)atCoords.get(jj+2)).floatValue()));
         partInSetXYZs.add(partInXYZs);
         //log.debug(String.format("XZTheta (%8.3f,%8.3f,%8.3f)",
         //  partInXZThetas.get(partInXZThetas.size()-1).x,
@@ -105,14 +102,14 @@ void doTranslatedClosedCrossSections(
         //  partInXZThetas.get(partInXZThetas.size()-1).z
         //)); 
       }
-      //log.debug("");
     } else {
-      String msg="unprogrammed at specifier: "+specifiers+" this is fatal";
+      String msg="unprogrammed at specifier: "+atCoordinateType+" this is fatal";
       println(msg);
       log.fatal(msg);
-      System.exit(5);
-    }    
-  }  
+      System.exit(4);
+    }
+    //log.debug("");
+  }
   /******************************************************************
    * have ingested all the data from the JSON file for this part.
    * next step is to set the XYZ textureUV perVertex sets.
@@ -234,7 +231,6 @@ void doTranslatedClosedCrossSections(
 }
 void doSurfaceOfRotationAboutZaxis(
   JSONObject stuff,
-  JSONObject parameters,
   ArrayList<PVector> axyzs,
   ArrayList<Integer> aTriangleIndices,
   ArrayList<PVector> aTexCoords,
@@ -244,7 +240,7 @@ void doSurfaceOfRotationAboutZaxis(
 ){
   log.debug(name+" is SurfaceOfRotationAboutZaxis");
   ArrayList<PVector> partInXYZs          = new ArrayList<PVector>();
-  int num = parameters.getInt("suggested number of points per revolution");         
+  int num = stuff.getInt("number of points per revolution");         
   boolean nearEndClosedByTriangleFan=false;
   try{
    nearEndClosedByTriangleFan=stuff.getBoolean("near end closed by triangle fan");
@@ -259,17 +255,22 @@ void doSurfaceOfRotationAboutZaxis(
   }  
   //log.debug("nearEndClosedByTriangleFan="+(nearEndClosedByTriangleFan?"true ":"false"));
   //log.debug(" farEndClosedByTriangleFan="+( farEndClosedByTriangleFan?"true ":"false"));
-  String specifiers = parameters.getString("co-ordinate specifiers");
-  JSONArray coords=parameters.getJSONArray("co-ordinates");
+  String coordinateType=stuff.getString("cross section co-ordinate type");
+  JSONArray coords=stuff.getJSONArray("co-ordinates");
   float minZ=Float.MAX_VALUE;
   float maxZ=-Float.MAX_VALUE;      
-  if("x,z".equals(specifiers)){
+  if("x,z".equals(coordinateType)){
     for(int jj=0;jj<coords.size();jj+=2){
       partInXYZs.add(new PVector(((Double)coords.get(jj)).floatValue(),0.0f,((Double)coords.get(jj+1)).floatValue()));
       if(minZ > ((Double)coords.get(jj+1)).floatValue())minZ=((Double)coords.get(jj+1)).floatValue();
       if(maxZ < ((Double)coords.get(jj+1)).floatValue())maxZ=((Double)coords.get(jj+1)).floatValue();
     }
-  }
+  } else {
+    String msg="unprogrammed co-ordinate specifier: "+coordinateType+" this is fatal";
+    println(msg);
+    log.fatal(msg);
+    System.exit(5);
+  } 
   log.debug("minZ="+minZ+" maxZ="+maxZ+" from partInXYZs="+coords.size()/2);
   int jjLimit=partInXYZs.size();
   int jj=0;
@@ -311,9 +312,8 @@ void doSurfaceOfRotationAboutZaxis(
         aTriangleIndices.add(baseVertNum);
         aTriangleIndices.add(baseVertNum+kk-1);
         aTriangleIndices.add(baseVertNum+kk);             
-        //log.debug(String.format("A %3d %3d %3d   %4d %4d %4d  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f)  (%5.3f,%5.3f) (%5.3f,%5.3f) (%5.3f,%5.3f)",
-        //  ii,
-        // jj,
+        //log.debug(String.format("A %3d %3d   %4d %4d %4d  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f)  (%5.3f,%5.3f) (%5.3f,%5.3f) (%5.3f,%5.3f)",
+        //  jj,
         //  kk,
         //  aTriangleIndices.get(aTriangleIndices.size()-3),
         //  aTriangleIndices.get(aTriangleIndices.size()-2),
@@ -350,13 +350,12 @@ void doSurfaceOfRotationAboutZaxis(
       //  aTexCoords.get(aTexCoords.size()-1).y
       //));  
       int baseVertNum=axyzs.size()-num-1;          
-      //log.debug(String.format("onAxis  %3d %3d baseVertNum=%4d %4d",ii,jj,baseVertNum,axyzs.size()));
+      //log.debug(String.format("onAxis  %3d baseVertNum=%4d %4d",jj,baseVertNum,axyzs.size()));
       for(int kk=0;kk<num;kk++){
          aTriangleIndices.add(baseVertNum+kk);
          aTriangleIndices.add(onAxisNum);
          aTriangleIndices.add(baseVertNum+(kk+1)%num);
-         //log.debug(String.format("B %3d %3d %3d   %4d %4d %4d  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f)",
-         //  ii,
+         //log.debug(String.format("B %3d %3d   %4d %4d %4d  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f)",
          //  jj,
          //  kk,
          //  aTriangleIndices.get(aTriangleIndices.size()-3),
@@ -397,9 +396,6 @@ void doSurfaceOfRotationAboutZaxis(
          } else             
          if(textureTactic.equals("1X around rotation")){
            /* the kk==num   bit is to enable the texture to complete at 1.0 for the final wrap around */
-           //aTexCoords.add(new PVector((.5+(kk==num?1.0:(kk/(float)num)%1))%1,1.0- (partInXYZs.get(jj).z-minZ)/(maxZ-minZ)  ));
-           //aTexCoords.add(new PVector( (.5+(kk==num?1.0:(kk/(float)num)))%1 , 1.0- (partInXYZs.get(jj).z-minZ)/(maxZ-minZ)));
-           //aTexCoords.add(new PVector( kk==num?1.0:(kk/(float)num) , 1.0- (partInXYZs.get(jj).z-minZ)/(maxZ-minZ)));
            aTexCoords.add(new PVector(kk==num?1.0:(kk/(float)num), 1.0- (partInXYZs.get(jj).z-minZ)/(maxZ-minZ)));
          }
          //log.debug(String.format("C %2d %2d Off Axis textureTactic=%30s (%8.3f,%8.3f,%8.3f) (%5.3f,%5.3f)",
@@ -414,7 +410,7 @@ void doSurfaceOfRotationAboutZaxis(
          //));  
       }
       int baseVertNum=axyzs.size()-2*(num+1);
-      //log.debug(String.format("OffAxis %3d %3d baseVertNum=%4d %4d",ii,jj,baseVertNum,axyzs.size()));
+      //log.debug(String.format("OffAxis %3d baseVertNum=%4d %4d",jj,baseVertNum,axyzs.size()));
       for(int kk=0;kk<num;kk++){
         aTriangleIndices.add(baseVertNum+kk);
         aTriangleIndices.add(baseVertNum+num+1+kk);
@@ -422,8 +418,7 @@ void doSurfaceOfRotationAboutZaxis(
         aTriangleIndices.add(baseVertNum+num+kk+1);
         aTriangleIndices.add(baseVertNum+num+kk+2);
         aTriangleIndices.add(baseVertNum+kk+1);
-        //log.debug(String.format("C %3d %3d %3d   %4d %4d %4d   %4d %4d %4d   (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%5.3f,%5.3f)  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%5.3f,%5.3f)",
-        //  ii,
+        //log.debug(String.format("C %3d %3d   %4d %4d %4d   %4d %4d %4d   (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%5.3f,%5.3f)  (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%8.3f,%8.3f,%8.3f) (%5.3f,%5.3f)",
         //  jj,
         //  kk,
         //  aTriangleIndices.get(aTriangleIndices.size()-6),
@@ -450,9 +445,9 @@ void doSurfaceOfRotationAboutZaxis(
     }
   }
 }
-void getMinimalistJsonTeapot(){
+void getReducedDataCountJsonTeapot(){
   log.debug("in getMinimalistJsonTeapot");
-  String fid=".\\data\\Teapot_FewData.json";
+  String fid=".\\data\\Teapot_Blasphemer_Variant.json";
   log.debug("about to attempt loadJSONObject on "+fid);
   JSONObject json = loadJSONObject(fid);
   log.debug("load did not die");
@@ -466,17 +461,15 @@ void getMinimalistJsonTeapot(){
     JSONObject stuff=(JSONObject)parts.get(ii);    
     String name=stuff.getString("shape name");
     log.debug(String.format("%2d %-30s %2d",ii,name,stuff.size()));
-    String type=stuff.getString("shape type");
+    String type = stuff.getString("shape type");
     String textureTactic=stuff.getString("texture tactic");
-    JSONObject parameters = stuff.getJSONObject("shape parameters");
-    
     if(type.equals("surface of rotation about Z axis")){
-      doSurfaceOfRotationAboutZaxis(stuff,parameters,axyzs,aTriangleIndices,aTexCoords,type,textureTactic,name);
+      doSurfaceOfRotationAboutZaxis(stuff,axyzs,aTriangleIndices,aTexCoords,type,textureTactic,name);
     } else
     if(  type.equals("translated closed invariant cross section")
        ||type.equals("translated closed varying cross sections")
       ){
-      doTranslatedClosedCrossSections(stuff,parameters,axyzs,aTriangleIndices,aTexCoords,type,textureTactic,name);
+      doTranslatedClosedCrossSections(stuff,axyzs,aTriangleIndices,aTexCoords,type,textureTactic,name);
     }  
   }
   log.debug("end of parts aTriangleIndices.size()="+aTriangleIndices.size()+" numTriangles="+(aTriangleIndices.size()/3)+" axyzs.size()="+axyzs.size()+" aTexCoords.size()="+aTexCoords.size());
@@ -588,7 +581,7 @@ PVector[] getNormals(
   }  
   return(aNormals);
 }
-void getJsonTeapot(){
+void getJsonTeapot0(){
   /* With vertex and normal co-ordinates, scenes can be rendered using lighting effects.
    * The glMaterials class has a selection of pre-packaged sets of ambient, diffuse, specular, and shinyness 
    * properties attempting to mimic real world materials ala the OpenGL Red_Book.

@@ -1,7 +1,8 @@
 # Processsing3 Keyboard 3D Movement
 
 
-Sketch is a "Hello World" example to enable keyboard control of the camera (viewpoint) position and orientation.
+2 inside jokes and 2 real contributions: Keyboard control of the camera (viewpoint) position and orientation, and a teapot from dramatically reduced data content.
+
 Sketch is intended for inclusion in the \topics\interaction\  section of the processing examples.
 
 A single .pde encapsulated the cameraKey class.   Copying this into your sketch gets you the full function.   The Keyboard_3D_Movement.pde has the few initialization options needed.
@@ -33,3 +34,4 @@ Motion control is:
 +   The speed at which you turning occurs can be halved  by hitting F3
 +   The speed at which you turning occurs can be doubled by hitting F4
    
+The teapot version included employs the concept of EHOC's (Enumerated Higher Order Concepts) as an example of a technique which allows dramatic reductions in data size.   By my count, the number of data needed to programmatically create the  In using the app to digitize the classic teapot json file discovered that the almost ellipses in the handle are invariant is size.  Only their rotation changes.   This is not consistant with the teapot lore which has come down to us about a real teapot having been digitized, and the height then reduced in post processing.   Did include this classic teapot json in the sketch file set.  Did a couple of non-deforming alterations to this file: turned upright so +Z is up, and shifted the axis of symetry for the lid and body back to x,y=(0,0).

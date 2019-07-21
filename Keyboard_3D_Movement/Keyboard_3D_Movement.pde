@@ -8,6 +8,7 @@ import java.awt.MouseInfo;
 
 float angle;
 PImage world;
+//int num;
 
 PShape teapot0; /* legacy teapot */
 float[] xyzsAR;
@@ -46,7 +47,7 @@ Point mainWindowXY=new Point(600,550); /* use variable for the surface X,Y so th
 Logger log = Logger.getLogger("Master"); 
 
 void setup() {
-  size(640,480, P3D);  
+  size(640,480, P3D); 
   /* set to wherever is a convenient viewing location on your system. Numbers are X,Y pixel offsets from UL screen corner */
   surface.setLocation((int)mainWindowXY.getX(),(int)mainWindowXY.getY()); 
   initLog4j();
@@ -75,13 +76,10 @@ void setup() {
   
   PGL pgl = null;
   
-  /*     x   y   z    pitch       roll       yaw     */
-  ck.set(0,-30.6,6,radians(0),radians(0),radians(90));
-  //ck.set(0,-30.0,0.,radians(0),radians(0),radians(90));
-  //ck.set(    0.000,  -30.000,   20.671,    radians(   0.000),   radians(   0.000),   radians(  90.000));
+  /*          x         y         z            pitch                 roll                 yaw           */  
+  ck.set(    0.900,  -28.183,    8.665,    radians(   0.000),   radians(   0.000),   radians(  90.000));
 
-  
-  printCamera();
+  //printCamera();
 }
 
 void draw() {
@@ -123,9 +121,11 @@ void draw() {
       shape(teapot1);
     popMatrix();
   }  
-  if(showHello)sayHello();   
-  angle += 0.01;
+  if(showHello)sayHello();
+  
+  //angle=0.353;  
   //angle=ck.thetaMod();
+  angle += 0.01;
 }
 
 
@@ -226,9 +226,10 @@ void sayHello(){
   pushMatrix();
     scale(.1);
     fill(0.,1.,0.);
-    for(int jj=0;jj<3;jj++){
+    for(int jj=0;jj<4;jj++){
       pushMatrix();     
-        rotateZ(angle+jj*2*PI/3);
+        //rotateZ(angle+jj*2*PI/3);
+        rotateZ(angle+jj*2*PI/4);
         for(int ii=0;ii<hw.length();ii++){
           pushMatrix();
             float theta=ii*deltaTheta;
@@ -241,15 +242,20 @@ void sayHello(){
         }     
        popMatrix();
     }
-    for(int jj=0;jj<3;jj++){
+    for(int jj=0;jj<4;jj++){
       pushMatrix();     
-        rotateZ(angle+jj*2*PI/3+PI/3);
+        //rotateZ(angle+jj*PI/2+ck.phiMod(0,PI/2));
+        rotateZ(-angle+jj*PI/2+radians(40));
         for(int ii=0;ii<hw.length();ii++){
           pushMatrix();
-            float theta=ii*deltaTheta;
-            translate(orbitRadius1*sin(theta),orbitRadius1*cos(theta),orbitHeight1);
-            rotateZ(-theta);
-            rotateX(radians(60)); /* tilted in for Southern hemisphere */
+            float theta=-ii*deltaTheta;         
+            translate(orbitRadius1*sin(theta),orbitRadius1*cos(theta),orbitHeight1);            
+            rotateZ(-1.131*theta); /* rotates on axis from bottom of letter to top of letter */
+            //rotateZ(theta); /* turns each letter the same amount, need to have turn adjusted differently for each letter */
+            //rotateZ(theta*ck.xMod(-2,2));
+            //rotateY(ck.phiMod()); /* spins around axis from 0,0,0 to letter */
+            rotateY(PI);
+            rotateX(radians(300)); /* tilted in for Southern hemisphere    Rotates around axis from letter center to next letter center ffffff*/
             //rotateX(ck.thetaMod());
             text(hw.substring(ii,ii+1),0.,0.,0.);   
           popMatrix();

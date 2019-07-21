@@ -2,6 +2,7 @@
 
 
 2 inside jokes and 2 real contributions: Keyboard control of the camera (viewpoint) position and orientation, and a teapot from dramatically reduced data content.
+
 Sketch is intended for inclusion in the \topics\interaction\  section of the processing examples.
 
 A single .pde encapsulated the cameraKey class.   Copying this into your sketch gets you the full function.   The Keyboard_3D_Movement.pde has the few initialization options needed.

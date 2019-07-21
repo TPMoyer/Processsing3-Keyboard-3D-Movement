@@ -87,7 +87,7 @@ void draw() {
   ck.drawMethods();
   scale(1.,1.,-1.); /* set Y axis conformal to USA Math, USA Physics, and OpenGL:  X Pos to the right , Y Pos Away, Z Pos is up */
   background(0.5); /* different from full white, so that if anything is ever inadvertantly drawn white, it will still be visible */
-  background(1.0);
+  //background(1.0);
   lights();
   if(showCrossHairs)ck.drawCrossHairs();
    

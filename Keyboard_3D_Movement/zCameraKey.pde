@@ -34,8 +34,8 @@ CameraKey ck = new CameraKey(0.,0.,500.,    radians( -90.000),   radians( 0.000)
 float x,y,z,theta,phi;
 PFont font0;
 
-
 class CameraKey {
+
   /* x, y, and z are set up to correspond to the orientation taught in USA math an USA physics classes
    * This has 
    *   X positive to the right
@@ -51,7 +51,8 @@ class CameraKey {
    * bounds on yaw are 0 to TWO_PI 
    */
   public PVector pry;  
-  public float deltaXYZ=8;
+//  public float deltaXYZ=8;
+  public float deltaXYZ=8;   /* depending on the size of your image (in unitless x,y,z values) make this a larger or smaller power of 2 */ 
   public float deltaPRY=radians(30.);
   private boolean verbosePOV=false;
   private boolean showThickAxies=true;
@@ -76,6 +77,11 @@ class CameraKey {
   private PVector forward = new PVector();
   private PVector magnitudes = new PVector();
   
+  private PVector left0    = new PVector();
+  private PVector up0      = new PVector();
+  private PVector forward0 = new PVector();
+  private PVector magnitudes0 = new PVector();
+  
   
   /* Used by the X,Y,Theta, Phi   Mod series of methods.
    * Allows the user to exit the window without disturbing the current settings 
@@ -95,66 +101,50 @@ class CameraKey {
     println  (String.format("(%7.3f,%7.3f,%7.3f) (%8.3f,%8.3f,%8.3f)",xyz.x,xyz.y,xyz.z,degrees(pry.x),degrees(pry.y),degrees(pry.z)));
     //log.debug(String.format("(%7.3f,%7.3f,%7.3f) (%8.3f,%8.3f,%8.3f)",xyz.x,xyz.y,xyz.z,degrees(pry.x),degrees(pry.y),degrees(pry.z)));
   }
-  void y3dText2(String s,float x,float y,float z,float pitch,float roll,float yaw){    
-    pushStyle();
-      pushMatrix();
-        fill(0);
-        //PVector savedPRY=pry;
-        //PVector savedXYZ=xyz;
-        //set(0.,0.,0.,pitch,roll,yaw);
+  // void y3dText2(String s,float x,float y,float z,float pitch,float roll,float yaw){    
+  //   pushStyle();
+  //     pushMatrix();
+  //       fill(0);
+  //       //PVector savedPRY=pry;
+  //       //PVector savedXYZ=xyz;
+  //       //set(0.,0.,0.,pitch,roll,yaw);
        
-        rotateY(yaw);
-        rotateX(pitch);
+  //       rotateY(yaw);
+  //       rotateX(pitch);
         
-        text(s,x,-z,y);      
-        //set(savedXYZ.x,savedXYZ.y,savedXYZ.z,savedPRY.x,savedPRY.y,savedPRY.z);
+  //       text(s,x,-z,y);      
+  //       //set(savedXYZ.x,savedXYZ.y,savedXYZ.z,savedPRY.x,savedPRY.y,savedPRY.z);
         
-        ////rotate(pitch,roll,yaw);
-        ////float theta=thetaMod(-PI,PI);
-        //rotateX(pitch);
-        ////rotateY(roll);
-        ////rotateZ(yaw);
-        //fill(0);
-        //pushMatrix();
-        //  //scale(1,-1,1); /* causes Y to be back to the Processing default */
-        //  text(s,x,y,z);
-        //popMatrix();
-      popMatrix();
-    popStyle();
-  }  
+  //       ////rotate(pitch,roll,yaw);
+  //       ////float theta=thetaMod(-PI,PI);
+  //       //rotateX(pitch);
+  //       ////rotateY(roll);
+  //       ////rotateZ(yaw);
+  //       //fill(0);
+  //       //pushMatrix();
+  //       //  //scale(1,-1,1); /* causes Y to be back to the Processing default */
+  //       //  text(s,x,y,z);
+  //       //popMatrix();
+  //     popMatrix();
+  //   popStyle();
+  // }  
   
-  
-  void y3dText(String s,float x,float y,float z,float roll,float pitch,float yaw){
-    pushStyle();
-      pushMatrix();
-        //rotate(pitch,roll,yaw);
-        //float theta=thetaMod(-PI,PI);
-        rotateX(PI/2.-pitch);
-        rotateY(roll);
-        rotateZ(yaw);
-        fill(0);
-        pushMatrix();
-          //scale(1,-1,1); /* causes Y to be back to the Processing default */
-          text(s,x,-y,-z);
-        popMatrix();
-      popMatrix();
-    popStyle();
-  }  
-  
-  
-  
+
+   
   void set(float X,float Y,float Z,float pitch, float roll,float yaw){
     this.xyz = new PVector(X,Y,-Z);
     this.pry = new PVector(-pitch,roll,yaw);
     //log.debug(String.format("(%7.3f,%7.3f,%7.3f) (%8.3f,%8.3f,%8.3f)",xyz.x,xyz.y,xyz.z,degrees(pry.x),degrees(pry.y),degrees(pry.z)));
   }  
- 
+  void setDeltaXYZ(float toB){
+    deltaXYZ=toB;
+  }
   /* start each of these with right hand,  index finger away.   thumb up.    
    * pitch is tilt index finger down,                   phi    symbol is circle with vertical stripe 
    * roll is tilt thumb to left                         psi    symbol is trident  
    * yaw is pivot index finger toward the left          theta  symbol is circle with horizontal stripe
    */
-  void setFromPRY(float pitch,float roll, float yaw){
+  void setPRY(float pitch,float roll, float yaw){
     pry.set(pitch,roll,yaw);
     this.set(true);
   }
@@ -179,23 +169,21 @@ class CameraKey {
       camera(0.,0.,0.,  1.,0.,0.,   0.,0.,1.);  /* starting point for 0 pitch, 0 yaw, 0 roll is flat-and-level pointing toward PosX */
       //log.debug("");
       //log.debug(String.format("xyz=(%9.3f,%9.3f,%9.3f) pry=(%8.3f,%8.3f,%8.3f)",xyz.x,xyz.y,xyz.z,degrees(pry.x),degrees(pry.y),degrees(pry.z)));
-      rotate(-pry.z,0.,0.,1.); /* rotate along the up vector.  Always 0.,0.,1. because we start the same: forward +X,  up +Y */
+      rotate(-pry.z,0.,0.,1.); /* rotate yaw along the up vector.  Up is 0.,0.,1. because of the prior camera command */
       mvm=((PGraphicsOpenGL)g).modelview;
-      rotate(-pry.x,mvm.m00,mvm.m01,mvm.m02); /* rotate along the right axis */
+      rotate(-pry.x,mvm.m00,mvm.m01,mvm.m02); /* rotate along the (now modified by yaw) right axis */
       mvm=((PGraphicsOpenGL)g).modelview;
-      rotate(pry.y,-mvm.m20,-mvm.m21,-mvm.m22); /* rotate along the forward axis */
+      rotate(pry.y,-mvm.m20,-mvm.m21,-mvm.m22); /* rotate along the (now modified by yaw and pitch) forward axis */
       //sayMVM();
-//      translate(-xyz.x,-xyz.y,-xyz.z);
-      sayMVM();
+      sayMVM(); /* this carries the Processing internal variables to this class's forward, left, and up PVectors */
       //if(say)log.debug("zCameraKey 96 "+sayMVM());
       //if(say)log.debug("zCameraKey 97 "+xyzpryFigure());
     popMatrix();
     camera(xyz.x,xyz.y,xyz.z,   xyz.x+forward.x,xyz.y+forward.y,xyz.z+forward.z,  up.x,up.y,up.z);
     //if(say)log.debug(say1());
     //if(say)println(say1());
-    // drawCrossHairs();
-  }
-  void say(){
+ }
+ void say(){
     println(String.format("ck.set(%9.3f,%9.3f,%9.3f,    radians(%8.3f),   radians(%8.3f),   radians(%8.3f));",
       xyz.x,
       xyz.y,
@@ -233,6 +221,22 @@ class CameraKey {
       forward.z      
     ));      
   }  
+  String sayDeflected(){
+    return( String.format("deflecteds %9.3f (%6.3f,%6.3f,%6.3f)   %9.3f (%6.3f,%6.3f,%6.3f)   %9.3f (%6.3f,%6.3f,%6.3f)",
+      magnitudes0.x,
+      left0.x,
+      left0.y,
+      left0.z,
+      magnitudes0.z,
+      up0.x,
+      up0.y,
+      up0.z,
+      magnitudes0.z,
+      forward0.x,
+      forward0.y,
+      forward0.z      
+    ));      
+  }  
   void sayPure(){
     println(String.format("(%9.3f,%9.3f,%9.3f) (%8.3f,%8.3f,%8.3f) (%6.3f,%6.3f,%6.3f) (%6.3f,%6.3f,%6.3f) (%6.3f,%6.3f,%6.3f)",
       xyz.x,
@@ -252,7 +256,91 @@ class CameraKey {
        cos(pry.x) * sin(pry.y)                                         // right[2]
    ));      
   }  
+  /* 3D orientated text.
+   * yaw is compass bearing within the XY plane.   
+   *    yaw==0      is text perpendicular to east,  to be read from x=0
+   *     yaw==PI/2   is text perpendicular to north, to be read from x=0
+   *     yaw==PI     is text perpendicular to west,  to be read from x=0
+   *     yaw==3*PI/2 is text perpendicular to south, to be read from x=0
+   *  pitch is rotation around the line connecting the bases of the text letters
+   *     pitch==-PI/2 is viewpoint pointing down. Horizontal text, to be read from Z's more positive than the text
+   *     pitch==0     is viewpoint within XY plane. Verticle text,
+   *     pitch==PI/2  is veripoint pointing UP.  Horizontal text, to be read from Z's more negative 
+   *     pitch==3*PI/2 probably best to not think of pitch outside of   -PI/2 < pitch < PI/2 
+   *  roll is rotation around the forward direction from the yaw and pitch
+   *     roll==0     is text along observer horizontal, with next letter to the right, ( == normal reading orientation)
+   *     roll==PI/2  is text along observer vertical    with next letter further along observer UP.  Text up is observer left. 
+   *     roll==PI    is upside down text along observer horizontal, with next letter further along observer left
+   *     roll=3*PI/2 is text along observer vertical    with next letter further along observer DOWN.  Text up is observer right.
+   */     
+  void y3dText(String s,float x,float y,float z,float pitch,float roll,float yaw){
+    pushMatrix();
+      translate(x,y,z); 
+      rotate(-roll,cos(yaw)*cos(pitch),sin(yaw)*cos(pitch),sin(pitch));      
+      rotateZ(yaw-PI/2); 
+      rotateX(3*PI/2+pitch);
+     //println(String.format("xyz for forward=(%6.3f,%6.3f,%6.3f)",cos(yaw)*cos(pitch),sin(yaw)*cos(pitch),sin(pitch)));
+      text(s,0.,0.,0.);
+    popMatrix();
+  }
+  /* Asymetric labeled axies
+   * The positive ends of each axis has extensions along the positive directions of the other two axies 
+   * The labels on the axies can also serve as y3dText orientation examples 
+   */
+  void thickLabledAxies(){
+    //scale(ck.xmod(.01,1)); /* used to find best shrinkage factor */
+    //scale(.065);  /* teapot is only +/- 16 and full scale axies are +/- 500, so found .065 most pretty */   
+    fill(0);
+    y3dText("<= NEG X    X POS =>",-100.,  -4.,  11., -PI/2.,    0.,    PI/2.); /* on top       of X axis */
+    y3dText("<= NEG X    X POS =>",-100., -11.,  -4.,     0.,    0.,    PI/2.); /* on yNeg side of X axis */
+    y3dText("<= POS X    X NEG =>", 100.,  11.,  -4.,     0.,    0., 3.*PI/2.); /* on yPos side of X axis */
+    y3dText("<= NEG X    X POS =>",-100.,   4., -11.,  PI/2.,    0.,    PI/2.); /* on bottom    of X axis */
 
+    y3dText("<= NEG Y    Y POS =>",   4.,-100.,  11., -PI/2.,    0.,    PI   ); /* on top       of Y axis */
+    y3dText("<= NEG Y    Y POS =>",  11.,-100.,  -4.,     0.,    0.,    PI   ); /* on xPos side of Y axis */
+    y3dText("<= POS Y    Y NEG =>", -11., 100.,  -4.,     0.,    0.,       0.); /* on xNeg side of Y axis */
+    y3dText("<= POS Y    Y NEG =>",   4., 100., -11.,  PI/2.,    0.,       0.); /* on bottom    of Y axis */
+
+    y3dText("<= NEG Z    Z POS =>",  -4.,  11.,-100.,     0., PI/2., 3.*PI/2.); /* on yPos side of Z axis */
+    y3dText("<= NEG Z    Z POS =>",   4., -11.,-100.,     0., PI/2.,    PI/2.); /* on yNeg side of Z axis */
+    y3dText("<= NEG Z    Z POS =>",  11.,   4.,-100.,     0., PI/2.,    PI   ); /* on xPos side of Z axis */
+    y3dText("<= NEG Z    Z POS =>", -11.,  -4.,-100,      0., PI/2.,       0.); /* on xNeg side of Z axis */
+    
+    /* the axis boxes are rendered using the effects of the lights() if they are active */
+    pushStyle();  
+      stroke(1,0,0);
+      strokeWeight(5);
+      //strokeWeight(1);
+      float thick=20;
+      fill(.8);
+      //noFill();
+           
+      box(500., thick, thick);  /* X axis */
+      pushMatrix();
+        translate(250.,50.,0.);
+        box(thick,100.,thick);  /* L on end of X axis toward Y+ */
+        translate(0.,-50.,50.);
+        box(thick,thick,100.);  /* L on end of Y axis toward Z+ */
+      popMatrix();
+      
+      box( thick,500., thick);
+      pushMatrix();
+        translate(50.,250.,0.);
+        box(100.,thick,thick);  /* L on end of Y axis toward X+ */
+        translate(-50.,0.,50.);
+        box(thick,thick,100.);  /* L on end of Y axis toward Z+ */
+      popMatrix();
+      
+      box( thick, thick,500.);
+      pushMatrix();
+        translate(50.,0.,250.);
+        box(100.,thick,thick);  /* L on end of Z axis toward X+ */
+        translate(-50.,50.,0.);
+        box(thick,100.,thick);  /* L on end of Z axis toward Y+ */
+      popMatrix();
+      
+    popStyle();
+  }
   /* return a string for a pretty'd up modelview Matrix.  
    * Note that several values output are -1.0X the actual modelview values.
    * Format is presented as left, up, and forward, with magnitudes for each 
@@ -335,16 +423,17 @@ class CameraKey {
         sm30,sm31,sm32,sm33
       );
     popMatrix();
-    left   = new PVector(m00,m01,m02);
-    up     = new PVector(m10,m11,m12);
-    forward= new PVector(m20,m21,m22);
-    magnitudes=new PVector(m03,m13,m23);
+    
+    left       = new PVector(m00,m01,m02);
+    up         = new PVector(m10,m11,m12);
+    forward    = new PVector(m20,m21,m22);
+    magnitudes = new PVector(m03,m13,m23);
     //log.debug("inside sayMVM outString=\n"+outString);
     //log.debug(String.format("inside sayMVM    left=(%6.3f,%6.3f%6.3f)",left.x   ,left.y   ,left.z   ));
     //log.debug(String.format("inside sayMVM      up=(%6.3f,%6.3f%6.3f)",up.x     ,up.y     ,up.z     ));
     //log.debug(String.format("inside sayMVM forward=(%6.3f,%6.3f%6.3f)",forward.x,forward.y,forward.z));
-    //println("outstring=\n"+outString);
-    return(outString);
+    //println("outstring=\n"+outString);    
+    return(outString);  
   }
   
   String xyzpryFigure(){
@@ -581,7 +670,7 @@ class CameraKey {
   void drawMethods(){
     feedKeys();/* if any key is currently pressed, feed that directive to the methods which update POV variables */
     set(false);/* set the camera viewpoint.  false== do not print the current location & orientation */
-    checkIfSay(); /* Mouse-Left-Click prints to console the cameraKey command which would set the current position & orientation */  
+    checkIfSay(); /* Mouse-Left-Click prints to console the CameraKey command which can be used to   set the current position & orientation */  
   }
   void feedKeys(){
    if(  (true==keyPressed)
@@ -937,68 +1026,7 @@ class CameraKey {
 
   
   
-  void thickLabledAxies(){
-   /* By uncommenting these, and putting the theta and phi
-    * as values in the angular inputs to y3dText, 
-    * I was able to fiddle around with the mouse and get the text's oriented.
-    */
-    
-   //theta=thetaMod(-PI,PI);
-   //phi  =  phiMod(-PI,PI);
-   
-   /* An example line with mouse interactive rotations would be  
-    *  y3dText("<= NEG X    X POS =>",-100,-4,11,    0.,theta,phi);  
-    */
-   
-    y3dText("<= NEG X    X POS =>",-100,-4,11,    0.,-PI/2.,    0.); /* on top       of X bar */  
-    y3dText("<= POS X    X NEG =>",-100,-4,11,    0.,    0.,  PI); /* on yPos side of X bar */
-    y3dText("<= NEG X    X POS =>",-100,-4,11,    0., PI/2.,    0.); /* on bottom    of X bar */
-    y3dText("<= NEG X    X POS =>",-100,-4,11,-PI   ,    0.,  PI); /* on yNeg side of X bar */
-    
-    y3dText("<= NEG Y    Y POS =>",-100,-4,11,   0,-PI/2., -PI/2.); /* on top       of Y bar */
-    y3dText("<= NEG Y    Y POS =>",-100,-4,11,-PI/2.,-PI/2., -PI/2.); /* on xPos side of Y bar */
-    y3dText("<= POS Y    Y NEG =>",-100,-4,11, PI/2., -PI/2., PI/2.); /* on xNeg side of Y bar */ 
-    y3dText("<= NEG Y    Y POS =>",-100,-4,11,    0., PI/2., PI/2.); /* on bottom    of Y bar */  
-    
-    y3dText("<= NEG Z    Z POS =>",-100,-4,11,    0.,    0., PI/2.); /* on yPos side of X bar */
-    y3dText("<= NEG Z    Z POS =>",-100,-4,11,-PI   ,    0., PI/2.); /* on yNeg side of Z bar */
-    y3dText("<= NEG Z    Z POS =>",-100,-4,11,-PI/2.,    0., PI/2.); /* on xPos side of Z bar */
-    y3dText("<= NEG Z    Z POS =>",-100,-4,11, PI/2.,    0., PI/2.); /* on xNeg side of Z bar */
-    
-    /* these boxes are rendered using the effects of the lights() */
-    pushStyle();
-  
-      stroke(1,0,0);
-      strokeWeight(5);
-      
-      fill(.8);
-      //glm.setMaterial(2);
-     
-      box(500., 20., 20.);  /* X axis */
-      pushMatrix();
-        translate(250.,50.,0.);
-        box(20.,100.,20.);  /* L on end of X axis toward Y+ */
-        translate(0.,-50.,50.);
-        box(20.,20.,100.);  /* L on end of Y axis toward Z+ */
-      popMatrix();
-      
-      box( 20.,500., 20.);
-      pushMatrix();
-        translate(50.,250.,0.);
-        box(100.,20.,20.);  /* L on end of Y axis toward X+ */
-        translate(-50.,0.,50.);
-        box(20.,20.,100.);  /* L on end of Y axis toward Z+ */
-      popMatrix();
-      box( 20., 20.,500.);
-       pushMatrix();
-        translate(50.,0.,250.);
-        box(100.,20.,20.);  /* L on end of Z axis toward X+ */
-        translate(-50.,50.,0.);
-        box(20.,100.,20.);  /* L on end of Z axis toward Y+ */
-      popMatrix();
-      
-    popStyle();
-  }
+ 
   
   
   void longSentance(){

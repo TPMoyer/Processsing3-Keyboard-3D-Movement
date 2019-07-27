@@ -49,7 +49,8 @@ Logger log = Logger.getLogger("Master");
 void setup() {
   size(640,480, P3D); 
   /* set to wherever is a convenient viewing location on your system. Numbers are X,Y pixel offsets from UL screen corner */
-  surface.setLocation((int)mainWindowXY.getX(),(int)mainWindowXY.getY()); 
+  surface.setLocation((int)mainWindowXY.getX(),(int)mainWindowXY.getY());
+//  PGL pgl = null;
   initLog4j();
   font0 = createFont("Monospaced.bold", 16); /* used by ck.thickLabledAxies()  */
   textFont(font0); 
@@ -57,7 +58,10 @@ void setup() {
   createGUI();
   option1.setSelected(false);
   //ck.setCameraNear(.01);ck.setCameraFar(40.); /* Allowed precise (close in) movement when using this app to digitize the classic teapot */
-  ck.setCameraNear(.1);ck.setCameraFar(500.); /* Should prevent most folks from having the teapot become invisible because it is outside the Frustum */
+  ck.setCameraNear(.1);
+  ck.setCameraFar(500.); /* Should prevent most folks from having the teapot become invisible because it is outside the Frustum */
+  ck.setDeltaXYZ(8.); 
+
   perspective(PI/3.0, width/height, ck.getCameraNear(), ck.getCameraFar());
   try{
     robot = new Robot();
@@ -73,13 +77,9 @@ void setup() {
   
   getReducedDataCountJsonTeapot();
   teapot1=createTeapot1();
-  
-  PGL pgl = null;
-  
+ 
   /*          x         y         z            pitch                 roll                 yaw           */  
   ck.set(    0.900,  -28.183,    8.665,    radians(   0.000),   radians(   0.000),   radians(  90.000));
-
-  //printCamera();
 }
 
 void draw() {
@@ -87,7 +87,7 @@ void draw() {
   ck.drawMethods();
   scale(1.,1.,-1.); /* set Y axis conformal to USA Math, USA Physics, and OpenGL:  X Pos to the right , Y Pos Away, Z Pos is up */
   background(0.5); /* different from full white, so that if anything is ever inadvertantly drawn white, it will still be visible */
-  //background(1.0);
+  background(1.0);
   lights();
   if(showCrossHairs)ck.drawCrossHairs();
    
@@ -121,11 +121,12 @@ void draw() {
       shape(teapot1);
     popMatrix();
   }  
+//  if(showHello)sayHello0();
   if(showHello)sayHello();
   
   //angle=0.353;  
-  //angle=ck.thetaMod();
-  angle += 0.01;
+  //angle=ck.thetaMod(); /* used to find angle for screenshot */
+  angle += 0.01; 
 }
 
 
@@ -210,7 +211,7 @@ PShape createTeapot1() {
   sh.endShape();
   return sh;
 }
-void sayHello(){
+void sayHello0(){
   String hw="Hello World";
   float orbitRadius0=94.;
   //orbitRadius0=ck.xMod(65.,100);
@@ -225,7 +226,7 @@ void sayHello(){
   
   pushMatrix();
     scale(.1);
-    fill(0.,1.,0.);
+    fill(1.,0.,0.);
     for(int jj=0;jj<4;jj++){
       pushMatrix();     
         //rotateZ(angle+jj*2*PI/3);
@@ -233,7 +234,7 @@ void sayHello(){
         for(int ii=0;ii<hw.length();ii++){
           pushMatrix();
             float theta=ii*deltaTheta;
-            translate(orbitRadius0*sin(theta),orbitRadius0*cos(theta),orbitHeight0);
+            translate(orbitRadius0*cos(theta),orbitRadius0*sin(theta),orbitHeight0);
             rotateZ(-theta);
             rotateX(radians(300)); /* tilted in for Northern hemisphere */
             //rotateX(ck.thetaMod());
@@ -245,7 +246,7 @@ void sayHello(){
     for(int jj=0;jj<4;jj++){
       pushMatrix();     
         //rotateZ(angle+jj*PI/2+ck.phiMod(0,PI/2));
-        rotateZ(-angle+jj*PI/2+radians(40));
+        rotateZ(angle+jj*PI/2+radians(40));
         for(int ii=0;ii<hw.length();ii++){
           pushMatrix();
             float theta=-ii*deltaTheta;         
@@ -261,6 +262,61 @@ void sayHello(){
           popMatrix();
         }     
        popMatrix();
+    }
+  popMatrix();
+}  
+void sayHello(){
+  String hw="Hello World";
+  float orbitRadius0=94.;
+  //orbitRadius0=ck.xMod(65.,100);
+  float orbitHeight0=120.;
+  //orbitHeight0=ck.yMod(0,145);
+  float orbitRadius1=106.;
+  //orbitRadius1=ck.xMod(95.,140);
+  float orbitHeight1=36.;
+  //orbitHeight1=ck.yMod(-45,100);
+  float deltaTheta=.1;
+  //deltaTheta=ck.xMod(0,.1);
+
+
+ orbitRadius0+=5;
+  pushMatrix();
+    scale(.1);
+    fill(0.,1.,0.);
+    for(int jj=0;jj<4;jj++){
+      float yaw=angle+jj*PI/2.;
+      for(int ii=0;ii<hw.length();ii++){
+        ck.y3dText(
+          hw.substring(ii,ii+1),
+          orbitRadius0*cos(yaw),
+          orbitRadius0*sin(yaw),
+          orbitHeight0,
+          radians(48),
+          0.,
+          yaw
+        );
+        yaw-=deltaTheta;
+      }
+    }  
+
+    for(int jj=0;jj<4;jj++){
+      //float northSouthShift=ck.xMod(0.,PI/4);
+      float northSouthShift=0.703;
+      float yaw=-angle+jj*PI/2.+northSouthShift;
+      for(int ii=0;ii<hw.length();ii++){
+        ck.y3dText(
+          hw.substring(ii,ii+1),
+          orbitRadius1*cos(yaw),
+          orbitRadius1*sin(yaw),
+          orbitHeight1,
+          //ck.thetaMod(),    /* radians(ck.xMod(0,360)   or  thetaMod() to find the angle wanted.  right-mouse-click pushes mouse data to console */
+          -.393,
+          //ck.phiMod(),
+          PI,
+          yaw
+        );
+        yaw+=deltaTheta;
+      }
     }
   popMatrix();
 }  

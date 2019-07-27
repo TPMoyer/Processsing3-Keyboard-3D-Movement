@@ -56,8 +56,8 @@ class CameraKey {
   public float deltaPRY=radians(30.);
   private boolean verbosePOV=false;
   private boolean showThickAxies=true;
-  private float cameraNear;
-  private float cameraFar;
+  private float cameraNear=1.;
+  private float cameraFar=1000.;
   
   private Boolean shiftPressed=false;
   private Boolean ctrlPressed=false; /* currently do not have modifiers for ctrl key being pressed */

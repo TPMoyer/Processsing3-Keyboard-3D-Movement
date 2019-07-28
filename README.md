@@ -1,4 +1,4 @@
-# Processsing3 Keyboard 3D Movement and 6 Degree Of Freedom Text
+# Processsing3 Keyboard 6 DOF (Degree Of Freedom) POV movement and Text placement
 
 
 + 6DOF (Six Degree Of Freedom) keyboard control of the camera (viewpoint) position & orientation.  

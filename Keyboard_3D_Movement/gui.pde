@@ -14,81 +14,69 @@
  * =========================================================
  */
 
-synchronized public void win_draw1(PApplet appc, GWinData data) { //_CODE_:window1:434517:
+synchronized public void win_draw1(PApplet appc, GWinData data) { //_CODE_:window1:452801:
   appc.background(230);
-} //_CODE_:window1:434517:
+} //_CODE_:window1:452801:
 
-public void option1_clicked1(GOption source, GEvent event) { //_CODE_:option1:618317:
+public void option1_clicked1(GOption source, GEvent event) { //_CODE_:option1:611240:
   //println("option1 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set( -240.000,    0.000,   40.000,    radians(   0.000),   radians(   0.000),   radians(   0.000));
-  ck.set( -24.000,    0.000,   0.000,    radians(   0.000),   radians(   0.000),   radians(   0.000));
-  option1.setSelected(false);
+  ck.set( -33.000,    0.000,   0.000,    radians(   0.000),   radians(   0.000),   radians(   0.000));
   focusOnMainWindow();
-} //_CODE_:option1:618317:
+} //_CODE_:option1:611240:
 
-public void option2_clicked1(GOption source, GEvent event) { //_CODE_:option2:985138:
+public void option2_clicked1(GOption source, GEvent event) { //_CODE_:option2:263483:
   //println("option2 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set(  240.000,    0.000,   40.000,    radians(   0.000),   radians(   0.000),   radians( 180.000));
-  ck.set(  24.000,    0.000,   0.000,    radians(   0.000),   radians(   0.000),   radians( 180.000));
-  option2.setSelected(false);
+  ck.set(  39.000,    0.000,   0.000,    radians(   0.000),   radians(   0.000),   radians( 180.000));
   focusOnMainWindow();
-} //_CODE_:option2:985138:
+} //_CODE_:option2:263483:
 
-public void option3_clicked1(GOption source, GEvent event) { //_CODE_:option3:459682:
+public void option3_clicked1(GOption source, GEvent event) { //_CODE_:option3:953615:
   //println("option3 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set(    0.000, -240.000,   40.000,    radians(   0.000),   radians(   0.000),   radians(  90.000));
-  ck.set(    0.000, -24.000,   0.000,    radians(   0.000),   radians(   0.000),   radians(  90.000));
-  option3.setSelected(false);
-  focusOnMainWindow();
-} //_CODE_:option3:459682:
+  ck.set(    0.000, -30.000,   0.000,    radians(   0.000),   radians(   0.000),   radians(  90.000));
+  focusOnMainWindow();  
+} //_CODE_:option3:953615:
 
-public void option4_clicked1(GOption source, GEvent event) { //_CODE_:option4:648415:
+public void option4_clicked1(GOption source, GEvent event) { //_CODE_:option4:750149:
   //println("option4 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set(    0.000,  240.000,   40.000,    radians(   0.000),   radians(   0.000),   radians( 270.000));
-  ck.set(    0.000,  24.000,   0.000,    radians(   0.000),   radians(   0.000),   radians( 270.000));
-  option4.setSelected(false);
-  focusOnMainWindow();
-} //_CODE_:option4:648415:
+  ck.set(    0.000,  30.000,   0.000,    radians(   0.000),   radians(   0.000),   radians( 270.000));
+  focusOnMainWindow();  
+} //_CODE_:option4:750149:
 
-public void option5_clicked1(GOption source, GEvent event) { //_CODE_:option5:828008:
+public void option5_clicked1(GOption source, GEvent event) { //_CODE_:option5:868862:
   //println("option5 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set(   40.000,    0.000, -240.000,    radians(  90.000),   radians(   0.000),   radians(   0.000));
-  ck.set(   0.000,    0.000, -24.000,    radians(  90.000),   radians(   0.000),   radians(   0.000));
-  option5.setSelected(false);
-  focusOnMainWindow();
-} //_CODE_:option5:828008:
+  ck.set(   0.000,    0.000, -19.000,    radians(  90.000),   radians(   0.000),   radians(   0.000));
+  focusOnMainWindow();  
+} //_CODE_:option5:868862:
 
-public void option6_clicked1(GOption source, GEvent event) { //_CODE_:option6:508464:
+public void option6_clicked1(GOption source, GEvent event) { //_CODE_:option6:282032:
   //println("option6 - GOption >> GEvent." + event + " @ " + millis());
-  //ck.set(   40.000,    0.000,  240.000,    radians( -90.000),   radians(   0.000),   radians(   0.000));
-  ck.set(   0.000,    0.000,  24.000,    radians( -90.000),   radians(   0.000),   radians(   0.000));
-  option6.setSelected(false);
-  focusOnMainWindow();
-} //_CODE_:option6:508464:
+  ck.set(   0.000,    0.000,  42.000,    radians( -90.000),   radians(   0.000),   radians(   0.000));
+  focusOnMainWindow();  
+} //_CODE_:option6:282032:
 
-public void checkbox1_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox1:785638:
+public void checkbox1_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox1:811750:
   //println("checkbox1 - GCheckbox >> GEvent." + event + " @ " + millis());
   showThickAxies=(event.toString()=="SELECTED");
-  focusOnMainWindow();
-} //_CODE_:checkbox1:785638:
+  focusOnMainWindow(); 
+} //_CODE_:checkbox1:811750:
 
-public void checkbox2_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox2:823634:
+public void checkbox2_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox2:767457:
   //println("checkbox2 - GCheckbox >> GEvent." + event + " @ " + millis());
   showTeapot=(event.toString()=="SELECTED");
-  focusOnMainWindow();
-} //_CODE_:checkbox2:823634:
+  focusOnMainWindow();   
+} //_CODE_:checkbox2:767457:
 
-public void checkbox3_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox3:789607:
+public void checkbox3_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox3:632534:
   //println("checkbox3 - GCheckbox >> GEvent." + event + " @ " + millis());
   showHello=(event.toString()=="SELECTED");
-  focusOnMainWindow();
-} //_CODE_:checkbox3:789607:
+  focusOnMainWindow();  
+} //_CODE_:checkbox3:632534:
 
-public void checkbox4_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox4:788481:
+public void checkbox4_clicked1(GCheckbox source, GEvent event) { //_CODE_:checkbox4:790413:
   //println("checkbox4 - GCheckbox >> GEvent." + event + " @ " + millis());
   showCrossHairs=(event.toString()=="SELECTED");
-  focusOnMainWindow();
-} //_CODE_:checkbox4:788481:
+  focusOnMainWindow();  
+} //_CODE_:checkbox4:790413:
 
 
 
@@ -98,19 +86,15 @@ public void createGUI(){
   G4P.messagesEnabled(false);
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
-  surface.setTitle("Movement: f, b, c, r, arrow_keys,  shift_arrow_keys");
-  window1 = GWindow.getWindow(this, "GUI", 600, 220, 640, 300, JAVA2D);
+  surface.setTitle("POV Movement with f,b,c,r,arrow_keys, and shift_arrow_keys");
+  window1 = GWindow.getWindow(this, "GUI", 78, 0, 640, 300, JAVA2D);
   window1.noLoop();
   window1.setActionOnClose(G4P.KEEP_OPEN);
   window1.addDrawHandler(this, "win_draw1");
-  label1 = new GLabel(window1, 10, 270, 640, 30);
-  label1.setText("My label");
-  label1.setTextBold();
-  label1.setOpaque(false);
   togGroup1 = new GToggleGroup();
   option1 = new GOption(window1, 120, 20, 160, 20);
   option1.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  option1.setText("at -X looking at 000");
+  option1.setText("at -X looking toward 000");
   option1.setOpaque(false);
   option1.addEventHandler(this, "option1_clicked1");
   option2 = new GOption(window1, 280, 20, 160, 20);
@@ -118,19 +102,19 @@ public void createGUI(){
   option2.setText("at +X looking toward 000");
   option2.setOpaque(false);
   option2.addEventHandler(this, "option2_clicked1");
-  option3 = new GOption(window1, 120, 40, 160, 20);
+  option3 = new GOption(window1, 122, 40, 160, 20);
   option3.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   option3.setText("at -Y looking toward 000");
   option3.setOpaque(false);
   option3.addEventHandler(this, "option3_clicked1");
   option4 = new GOption(window1, 280, 40, 160, 20);
   option4.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  option4.setText("at +Y looking at 000");
+  option4.setText("at +Y looking toward 000");
   option4.setOpaque(false);
   option4.addEventHandler(this, "option4_clicked1");
   option5 = new GOption(window1, 120, 60, 160, 20);
   option5.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
-  option5.setText("at -Z looking at 000");
+  option5.setText("at -Z looking toward 000");
   option5.setOpaque(false);
   option5.addEventHandler(this, "option5_clicked1");
   option6 = new GOption(window1, 280, 60, 160, 20);
@@ -146,9 +130,13 @@ public void createGUI(){
   togGroup1.addControl(option5);
   togGroup1.addControl(option6);
   label2 = new GLabel(window1, 90, 190, 389, 84);
+  label2.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   label2.setText("Camera location and orientation controlled with keyboard.\nMovement: f, b, c, r, arrow_keys, and shift_arrow_keys.\n \nXYZ speed: F1, F2 keys       Roll Pitch Yaw Speed: F3, F4 keys");
-  label2.setTextBold();
   label2.setOpaque(false);
+  label1 = new GLabel(window1, 10, 270, 640, 30);
+  label1.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  label1.setText("My label");
+  label1.setOpaque(false);
   checkbox1 = new GCheckbox(window1, 20, 130, 120, 20);
   checkbox1.setIconAlign(GAlign.LEFT, GAlign.MIDDLE);
   checkbox1.setText("Show Thick Axies");
@@ -178,7 +166,6 @@ public void createGUI(){
 // Variable declarations 
 // autogenerated do not edit
 GWindow window1;
-GLabel label1; 
 GToggleGroup togGroup1; 
 GOption option1; 
 GOption option2; 
@@ -187,6 +174,7 @@ GOption option4;
 GOption option5; 
 GOption option6; 
 GLabel label2; 
+GLabel label1; 
 GCheckbox checkbox1; 
 GCheckbox checkbox2; 
 GCheckbox checkbox3; 

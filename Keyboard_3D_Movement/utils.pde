@@ -37,3 +37,7 @@ void focusOnMainWindow(){
     System.err.format("IOException: %s%n", e);
   }
 }  
+void initializeGUI(){
+  option1.setSelected(false);
+  label2.setTextBold();
+}  
